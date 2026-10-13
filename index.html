@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fair Cards — An Italian Card Tradition, Reimagined for iPhone</title>
+  <meta name="description" content="Fair Cards is a single-player card game that brings a 19th-century Italian market pastime to your iPhone. Bid doubloons, read the bluffs, and win the grand prizes — all offline." />
+  <meta name="theme-color" content="#1b1230" />
+  <meta property="og:title" content="Fair Cards" />
+  <meta property="og:description" content="A 19th-century Italian market card game in your pocket. Single-player, offline, and free." />
+  <meta property="og:type" content="website" />
+  <style>
+    :root {
+      --bg-0: #0f0a1f;
+      --bg-1: #1b1230;
+      --bg-2: #2a1c4a;
+      --ink: #f4ecff;
+      --muted: #b9aed6;
+      --gold: #f5c542;
+      --gold-deep: #b8862b;
+      --red: #d23a3a;
+      --green: #4cc38a;
+      --blue: #5fa8ff;
+      --line: rgba(255,255,255,0.08);
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+      background:
+        radial-gradient(1200px 800px at 80% -10%, rgba(245,197,66,0.18), transparent 60%),
+        radial-gradient(900px 700px at -10% 30%, rgba(95,168,255,0.18), transparent 60%),
+        linear-gradient(180deg, var(--bg-0), var(--bg-1) 60%, #0a0616 100%);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.55;
+    }
+    a { color: inherit; }
+    img { max-width: 100%; display: block; }
+    .wrap { max-width: 1080px; margin: 0 auto; padding: 0 22px; }
+
+    /* Header */
+    .nav {
+      position: sticky; top: 0; z-index: 50;
+      backdrop-filter: saturate(140%) blur(12px);
+      background: rgba(15,10,31,0.6);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 700; letter-spacing: 0.2px; }
+    .brand-mark {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-deep));
+      display: grid; place-items: center; color: #2a1a00; font-weight: 800;
+      box-shadow: 0 6px 18px rgba(245,197,66,0.25), inset 0 0 0 1px rgba(255,255,255,0.25);
+    }
+    .nav-links { display: flex; gap: 18px; flex-wrap: wrap; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 14px; }
+    .nav-links a:hover { color: var(--ink); }
+
+    /* Hero */
+    .hero { padding: 64px 0 24px; }
+    .hero-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 36px; align-items: center; }
+    @media (max-width: 860px) { .hero-grid { grid-template-columns: 1fr; } }
+    .eyebrow {
+      display: inline-block; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--gold); padding: 6px 10px; border: 1px solid rgba(245,197,66,0.4); border-radius: 999px;
+    }
+    h1 { font-size: clamp(34px, 5.2vw, 56px); line-height: 1.06; margin: 14px 0 14px; letter-spacing: -0.02em; }
+    h1 .accent { background: linear-gradient(90deg, var(--gold), #ffe28a); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .lede { font-size: 18px; color: var(--muted); max-width: 56ch; }
+    .cta-row { display: flex; gap: 12px; margin-top: 22px; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 13px 18px; border-radius: 12px; font-weight: 600; text-decoration: none;
+      border: 1px solid var(--line); color: var(--ink); background: rgba(255,255,255,0.03);
+    }
+    .btn.primary {
+      background: linear-gradient(135deg, var(--gold), var(--gold-deep));
+      color: #1b0f00; border-color: transparent;
+      box-shadow: 0 10px 30px rgba(245,197,66,0.25);
+    }
+    .store-badge {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 10px 16px; border-radius: 12px;
+      background: #000; color: #fff; border: 1px solid rgba(255,255,255,0.12);
+      text-decoration: none; font-weight: 600;
+    }
+    .store-badge small { display: block; font-size: 10px; font-weight: 400; opacity: 0.8; letter-spacing: 0.08em; }
+    .store-badge span { font-size: 16px; }
+
+    .hero-card {
+      position: relative; aspect-ratio: 4/5; border-radius: 22px; overflow: hidden;
+      background: linear-gradient(160deg, #3a225c, #1d1138);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.45);
+    }
+    .hero-card .felt {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(circle at 50% 60%, rgba(245,197,66,0.18), transparent 55%),
+        repeating-radial-gradient(circle at 50% 60%, rgba(255,255,255,0.04) 0 2px, transparent 2px 12px),
+        linear-gradient(180deg, #143a2a, #0c2419);
+    }
+    .prize-row { position: absolute; left: 6%; right: 6%; top: 8%; display: flex; justify-content: space-between; gap: 8px; }
+    .prize {
+      flex: 1; aspect-ratio: 2/3; border-radius: 8px; padding: 8px;
+      background: linear-gradient(160deg, #fff7df, #f1d97a);
+      color: #2a1a00; font-weight: 700;
+      display: flex; flex-direction: column; justify-content: space-between; align-items: center;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.35), inset 0 0 0 2px rgba(0,0,0,0.06);
+      font-size: 11px;
+    }
+    .prize .suit { font-size: 22px; }
+    .prize.gold { background: linear-gradient(160deg, #fff2b8, #d6a437); }
+    .prize.blue { background: linear-gradient(160deg, #cfe2ff, #6fa6ff); color: #0a1a3a; }
+    .prize.red { background: linear-gradient(160deg, #ffd0c8, #c34a44); color: #2a0a0a; }
+    .prize.violet { background: linear-gradient(160deg, #e2d0ff, #8158d6); color: #1a0a2a; }
+    .stack-area { position: absolute; left: 10%; right: 10%; bottom: 8%; height: 28%; }
+    .coin-pile {
+      position: absolute; bottom: 0; width: 80px; height: 80px; border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #ffe28a, var(--gold) 40%, var(--gold-deep) 80%);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.4), inset 0 0 0 4px rgba(0,0,0,0.08);
+    }
+    .coin-pile:nth-child(1) { left: 18%; }
+    .coin-pile:nth-child(2) { left: 38%; transform: translateY(6px); }
+    .coin-pile:nth-child(3) { left: 58%; transform: translateY(-4px); }
+    .coin-label {
+      position: absolute; left: 50%; bottom: -22px; transform: translateX(-50%);
+      font-size: 11px; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase;
+    }
+
+    /* Sections */
+    section.block { padding: 64px 0; }
+    h2 { font-size: clamp(24px, 3.4vw, 36px); margin: 0 0 8px; letter-spacing: -0.01em; }
+    .sub { color: var(--muted); margin: 0 0 28px; max-width: 60ch; }
+
+    .feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    @media (max-width: 860px) { .feature-grid { grid-template-columns: 1fr; } }
+    .feature {
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      border: 1px solid var(--line); border-radius: 16px; padding: 22px;
+    }
+    .feature .ico {
+      width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center;
+      background: rgba(245,197,66,0.12); color: var(--gold); font-size: 18px; margin-bottom: 12px;
+    }
+    .feature h3 { margin: 0 0 6px; font-size: 17px; }
+    .feature p { margin: 0; color: var(--muted); font-size: 14.5px; }
+
+    .suit-row { display: flex; gap: 14px; flex-wrap: wrap; }
+    .suit {
+      flex: 1 1 140px; min-width: 140px;
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px; border-radius: 14px; border: 1px solid var(--line);
+      background: rgba(255,255,255,0.03);
+    }
+    .suit .glyph { font-size: 22px; }
+    .suit .name { font-weight: 600; }
+    .suit .pts { color: var(--muted); font-size: 13px; }
+
+    .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; counter-reset: step; }
+    @media (max-width: 860px) { .steps { grid-template-columns: 1fr; } }
+    .step {
+      position: relative; padding: 22px; border-radius: 16px;
+      background: rgba(255,255,255,0.03); border: 1px solid var(--line);
+    }
+    .step::before {
+      counter-increment: step; content: counter(step, decimal-leading-zero);
+      position: absolute; top: 14px; right: 16px; font-size: 28px; font-weight: 800; color: rgba(245,197,66,0.35);
+    }
+    .step h3 { margin: 0 0 6px; font-size: 17px; }
+    .step p { margin: 0; color: var(--muted); font-size: 14.5px; }
+
+    .quote {
+      padding: 26px; border-radius: 16px;
+      background: linear-gradient(135deg, rgba(245,197,66,0.12), rgba(95,168,255,0.08));
+      border: 1px solid var(--line);
+      font-size: 17px; line-height: 1.6;
+    }
+    .quote em { color: var(--gold); font-style: normal; font-weight: 700; }
+
+    .pill-row { display: flex; flex-wrap: wrap; gap: 10px; }
+    .pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 12px; border-radius: 999px; border: 1px solid var(--line);
+      background: rgba(255,255,255,0.04); color: var(--muted); font-size: 13px;
+    }
+    .pill .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 3px rgba(76,195,138,0.18); }
+
+    /* Footer */
+    footer { padding: 40px 0 60px; border-top: 1px solid var(--line); margin-top: 30px; }
+    .foot-grid { display: flex; justify-content: space-between; gap: 18px; flex-wrap: wrap; color: var(--muted); font-size: 14px; }
+    .foot-links { display: flex; gap: 18px; flex-wrap: wrap; }
+    .foot-links a { text-decoration: none; }
+    .foot-links a:hover { color: var(--ink); }
+
+    .small { font-size: 13px; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <div class="wrap nav-inner">
+      <div class="brand">
+        <div class="brand-mark">F</div>
+        <span>Fair Cards</span>
+      </div>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="#features">Features</a>
+        <a href="#suits">Suits &amp; Prizes</a>
+        <a href="#how">How to Play</a>
+        <a href="#privacy">Privacy</a>
+        <a href="support.html">Support</a>
+        <a href="terms.html">Terms</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <span class="eyebrow">Single-player · Offline · Free</span>
+          <h1>An Italian card tradition, <span class="accent">reimagined</span> for iPhone.</h1>
+          <p class="lede">
+            Fair Cards brings a 19th-century Italian market pastime to your pocket. Bid doubloons across five rounds,
+            read the merchant's bluffs, and walk away with the grand prizes — all on a device, with no servers and no compromises.
+          </p>
+          <div class="cta-row">
+            <a class="store-badge" href="#" aria-label="Download on the App Store">
+              <svg width="22" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.365 1.43c0 1.14-.493 2.27-1.177 3.08-.744.9-1.99 1.57-2.987 1.57-.12 0-.23-.02-.3-.03-.01-.06-.01-.16-.01-.24 0-1.11.5-2.27 1.2-3.04.74-.84 1.97-1.46 3.0-1.5.02.13.04.27.04.41z"/><path d="M20.5 17.04c-.55 1.27-.81 1.84-1.51 2.96-1 1.6-2.4 3.6-4.14 3.6-1.54.02-1.93-1-4.02-.99-2.09.01-2.53 1-4.07.99-1.74-.02-3.07-1.83-4.07-3.43-2.78-4.46-3.07-9.7-1.36-12.49 1.21-1.97 3.12-3.12 4.92-3.12 1.83 0 2.98 1 4.5 1 1.47 0 2.36-1 4.5-1 1.6 0 3.3.87 4.5 2.37-3.95 2.16-3.31 7.79.75 10.11z"/></svg>
+              <span><small>Download on the</small>App Store</span>
+            </a>
+            <a class="btn" href="#features">Explore the game</a>
+          </div>
+        </div>
+        <div class="hero-card" role="img" aria-label="A felt table with five prize cards and three piles of doubloons">
+          <div class="felt"></div>
+          <div class="prize-row" aria-hidden="true">
+            <div class="prize gold"><div class="suit">🦁</div><div>Golden Lion · 300</div></div>
+            <div class="prize blue"><div class="suit">🔔</div><div>Sapphire Bell · 120</div></div>
+            <div class="prize red"><div class="suit">🗡️</div><div>Crimson Blade · 200</div></div>
+            <div class="prize violet"><div class="suit">🏺</div><div>Onyx Chalice · 180</div></div>
+            <div class="prize"><div class="suit">🪙</div><div>Sun Coin · 150</div></div>
+          </div>
+          <div class="stack-area">
+            <div class="coin-pile" aria-hidden="true"></div>
+            <div class="coin-pile" aria-hidden="true"></div>
+            <div class="coin-pile" aria-hidden="true"></div>
+            <div class="coin-label">Doubloons on the table</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="features">
+      <div class="wrap">
+        <h2>Everything you'd expect from a card night at the fair.</h2>
+        <p class="sub">No real money. No in-app purchases. No servers. Just cards, coins, and the people across the table.</p>
+        <div class="feature-grid">
+          <div class="feature">
+            <div class="ico">♠</div>
+            <h3>Five rounds, five prizes</h3>
+            <p>Bid, bluff, and deal across five rounds. The merchant steps in between rounds with an offer — sometimes honest, sometimes not.</p>
+          </div>
+          <div class="feature">
+            <div class="ico">👥</div>
+            <h3>Two AI rivals</h3>
+            <p>Face archetypes with distinct personalities: a cautious saver, a bold bidder, and a trickster who bluffs when you least expect it.</p>
+          </div>
+          <div class="feature">
+            <div class="ico">🂠</div>
+            <h3>40 illustrated cards</h3>
+            <p>A 40-card Italian deck across coins, cups, swords, and batons, plus five grand prizes from the 300-point Golden Lion down to the 120-point Sapphire Bell.</p>
+          </div>
+          <div class="feature">
+            <div class="ico">📅</div>
+            <h3>Daily challenge</h3>
+            <p>A fresh fixed-seed table drops every day. Replay the same seed, chase your best run, share it with friends.</p>
+          </div>
+          <div class="feature">
+            <div class="ico">🏆</div>
+            <h3>Career &amp; achievements</h3>
+            <p>Track your wins, longest streaks, and unlocks. Achievements celebrate everything from your first bluff to a perfect round.</p>
+          </div>
+          <div class="feature">
+            <div class="ico">🔒</div>
+            <h3>Offline &amp; private</h3>
+            <p>No network, no tracking, no accounts. Your avatar, stats, and card backs stay on your device — and only your device.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="suits">
+      <div class="wrap">
+        <h2>Four suits. Five grand prizes.</h2>
+        <p class="sub">The deck follows the Italian regional tradition. Familiar suits, hand-drawn faces, and a row of grand prizes that decide the final tally.</p>
+        <div class="suit-row">
+          <div class="suit"><div class="glyph">🪙</div><div><div class="name">Coins</div><div class="pts">Denari · 1–10</div></div></div>
+          <div class="suit"><div class="glyph">🏆</div><div><div class="name">Cups</div><div class="pts">Coppe · 1–10</div></div></div>
+          <div class="suit"><div class="glyph">⚔️</div><div><div class="name">Swords</div><div class="pts">Spade · 1–10</div></div></div>
+          <div class="suit"><div class="glyph">🪄</div><div><div class="name">Batons</div><div class="pts">Bastoni · 1–10</div></div></div>
+        </div>
+        <p class="small" style="margin-top:18px">Grand prizes: Golden Lion (300), Crimson Blade (200), Onyx Chalice (180), Sun Coin (150), Sapphire Bell (120). All values are virtual and have no cash equivalent.</p>
+      </div>
+    </section>
+
+    <section class="block" id="how">
+      <div class="wrap">
+        <h2>How to play.</h2>
+        <p class="sub">Each round the same three moves, then a new twist. Within a few hands the table feels like an old routine.</p>
+        <div class="steps">
+          <div class="step">
+            <h3>Open the bidding</h3>
+            <p>Five prizes sit on the table. Two computer rivals and you take turns bidding doubloons from your purse.</p>
+          </div>
+          <div class="step">
+            <h3>Haggle with the merchant</h3>
+            <p>Between rounds the merchant offers a side deal — a swap, a private offer, or a flat lie. Read the room.</p>
+          </div>
+          <div class="step">
+            <h3>Close the fair</h3>
+            <p>Win prizes, score points, and watch your career stats climb. Take a fresh photo for your profile and play another hand.</p>
+          </div>
+        </div>
+        <div class="quote" style="margin-top:28px">
+          "It's a single-player card game designed to feel like a social evening — without the noise, the waiting, or the empty wallet."
+          <em> — the design notebook</em>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="privacy">
+      <div class="wrap">
+        <h2>Privacy, in plain English.</h2>
+        <p class="sub">Fair Cards does not collect personal data, does not transmit gameplay, and does not show ads. The full policy is one tap away.</p>
+        <div class="pill-row">
+          <span class="pill"><span class="dot"></span>No account</span>
+          <span class="pill"><span class="dot"></span>No analytics</span>
+          <span class="pill"><span class="dot"></span>No ads</span>
+          <span class="pill"><span class="dot"></span>No network play</span>
+          <span class="pill"><span class="dot"></span>No in-app purchases</span>
+          <span class="pill"><span class="dot"></span>Photos stay on device</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap foot-grid">
+      <div>© <span id="year"></span> Fair Cards. An offline single-player card game.</div>
+      <div class="foot-links">
+        <a href="privacy.html">Privacy</a>
+        <a href="support.html">Support</a>
+        <a href="terms.html">Terms of Use</a>
+        <a href="mailto:Sitikhodijah00232@gmail.com">Sitikhodijah00232@gmail.com</a>
+      </div>
+    </div>
+    <div class="wrap" style="margin-top:10px">
+      <p class="small">All doubloons and prizes are virtual and have no cash value. No real gambling, no real currency, no in-app purchases.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
